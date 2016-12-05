@@ -1,6 +1,9 @@
 *.class
 *.log
 
+*.RData
+*.Rhistory
+
 # sbt specific
 .cache
 .history
