@@ -2,6 +2,7 @@ package main.scala
 
 import org.apache.spark.sql.SparkSession
 import main.scala.preprocessing.DataPreProcessor
+import main.scala.ml.RandomForestGenerator
 
 object Driver {
     def main(args: Array[String]) {
@@ -11,6 +12,7 @@ object Driver {
         }
         // Entry point of Spark SQL
         val session = SparkSession.builder().getOrCreate();
-        DataPreProcessor.preprocess(session, args(0))
+        var observations = DataPreProcessor.preprocess(session, args(0))
+        RandomForestGenerator.generateRF(observations, "Severity")
     }
 }

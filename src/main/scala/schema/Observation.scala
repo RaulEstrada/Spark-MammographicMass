@@ -24,3 +24,15 @@ case class Observation(val BIRADS: Option[Int], val Age: Option[Int],
         )
     }
 }
+
+object Observation {
+    def getFeaturesArray(target: String): Array[String] = {
+        target match {
+        case "Margin" => return Array[String]("BIRADS", "Age")
+        case "Shape" => return Array[String]("BIRADS", "Age", "Margin")
+        case "Density" => return Array[String]("BIRADS", "Age", "Margin", "Shape")
+        case "Severity" => return Array[String]("BIRADS", "Age", "Margin", "Shape",
+            "Density")
+        }
+    }
+}

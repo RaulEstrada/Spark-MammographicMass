@@ -6,9 +6,9 @@ import org.apache.spark.sql.Dataset
 import org.apache.spark.rdd.RDD
 
 object DataPreProcessor {
-    val deletionUpperLimit = 10
+    val deletionUpperLimit = 80
 
-    def preprocess(session: SparkSession, filePath: String) {
+    def preprocess(session: SparkSession, filePath: String): Dataset[Observation] = {
         import session.implicits._
         var observations = session.read.option("header", "true").option("inferSchema", "true")
             .csv(filePath).as[Observation]
@@ -18,6 +18,7 @@ object DataPreProcessor {
         observations = handleDeletionNAs(session, observations)
         println("After deletion, dataset with size: " + observations.count())
         printMissingValues(session, observations)
+        return observations
     }
 
     def printMissingValues(session: SparkSession, data: Dataset[Observation]) {
