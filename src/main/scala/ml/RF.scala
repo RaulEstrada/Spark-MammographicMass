@@ -5,19 +5,20 @@ import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.classification.RandomForestClassifier
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
 import org.apache.spark.ml.classification.RandomForestClassificationModel
+import org.apache.spark.ml.PipelineModel
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.IndexToString
 import org.apache.spark.sql.Dataset
 import main.scala.schema.Observation
 
-object RandomForestGenerator {
+object RF {
     var numberOfTrees = 60
     val impurity = "gini"
     val maxDepth = 30
     val featureSubsetStrategy = "auto"
     val seed = 1234
 
-    def generateRF(data: Dataset[Observation], target: String): RandomForestClassificationModel = {
+    def generate(data: Dataset[Observation], target: String): PipelineModel = {
         val dataNotNA = data.filter(data.col(target).isNotNull)
 
         // Convert String values that are part of a look-up into categorical
@@ -62,7 +63,6 @@ object RandomForestGenerator {
 
         // Predict values
         val predictions = model.transform(testData)
-        predictions.select("Predicted", target, "Features").show()
 
         //Evaluation
         val evaluator = new MulticlassClassificationEvaluator()
@@ -72,6 +72,6 @@ object RandomForestGenerator {
         val accuracy = evaluator.evaluate(predictions)
         println("Random Forest with test error: " + (1.0 - accuracy))
 
-        return model.stages(2).asInstanceOf[RandomForestClassificationModel]
+        return model
     }
 }
