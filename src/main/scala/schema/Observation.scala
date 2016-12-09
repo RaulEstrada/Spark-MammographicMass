@@ -31,8 +31,7 @@ object Observation {
         case "Margin" => return Array[String]("BIRADS", "Age")
         case "Shape" => return Array[String]("BIRADS", "Age", "Margin")
         case "Density" => return Array[String]("BIRADS", "Age", "Margin", "Shape")
-        case "Severity" => return Array[String]("BIRADS", "Age", "Margin", "Shape",
-            "Density")
+        case "Severity" => return Array[String]("BIRADS", "Age", "Margin", "Shape")
         }
     }
 }

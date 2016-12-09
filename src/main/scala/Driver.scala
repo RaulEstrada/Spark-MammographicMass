@@ -5,6 +5,7 @@ import main.scala.preprocessing.DataPreProcessor
 import main.scala.ml.RF
 import main.scala.ml.LR
 import main.scala.ml.GBT
+import main.scala.ml.MPC
 
 object Driver {
     def main(args: Array[String]) {
@@ -23,5 +24,6 @@ object Driver {
         println("Test error: " + countWrong.toDouble/testData.count().toDouble)
 
         GBT.generate(observations, "Severity")
+        MPC.generate(observations, "Severity")
     }
 }
