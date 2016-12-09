@@ -13,6 +13,7 @@ object Driver {
         // Entry point of Spark SQL
         val session = SparkSession.builder().getOrCreate();
         var observations = DataPreProcessor.preprocess(session, args(0))
-        Ensembler.ensemble(observations, "Severity")
+        observations.cache()
+        Ensembler.ensemble(observations, "Severity", session)
     }
 }
