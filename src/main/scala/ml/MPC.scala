@@ -2,7 +2,6 @@ package main.scala.ml
 
 import org.apache.spark.sql.Dataset
 import org.apache.spark.ml.classification.MultilayerPerceptronClassifier
-import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
 import org.apache.spark.ml.PipelineModel
 import main.scala.schema.Observation
 

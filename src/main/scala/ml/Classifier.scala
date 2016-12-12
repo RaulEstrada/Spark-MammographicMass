@@ -32,7 +32,7 @@ class Classifier {
     }
 
     def splits(data: Dataset[Observation]): Array[Dataset[Observation]] = {
-        return data.randomSplit(Array(percentageTrainingData, (1 - percentageTrainingData)))
+        return data.randomSplit(Array(percentageTrainingData, (1 - percentageTrainingData)), seed = Classifier.SEED)
     }
 
     def evaluateModel(algorithm: String, result: DataFrame) {
@@ -56,5 +56,8 @@ class Classifier {
         evaluateModel(algorithm, result)
         return model
     }
+}
 
+object Classifier extends Classifier {
+    val SEED = 1993L
 }

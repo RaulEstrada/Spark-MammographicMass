@@ -16,7 +16,7 @@ object Ensembler {
         import session.implicits._
 
         val ensamble = generateEnsamble(data, target, session)
-        val Array(trainingData, testData) = data.randomSplit(Array(.7, .3))
+        val Array(trainingData, testData) = data.randomSplit(Array(.7, .3), seed = Classifier.SEED)
         val collectedPredictions = predict(testData, ensamble, session)
         computeEnsembleError(collectedPredictions, testData)
     }
@@ -28,6 +28,7 @@ object Ensembler {
         val lr = LR.generate(data, target)
         val gbt = GBT.generate(data, target)
         val mpc = MPC.generate(data, target)
+        //val nb = NB.generate(data, target)
         return session.sparkContext.parallelize(Array(rf, lr, gbt, mpc)).collect()
     }
 
