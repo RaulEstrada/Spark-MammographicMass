@@ -4,9 +4,12 @@ import org.apache.spark.ml.feature.StringIndexer
 import org.apache.spark.ml.feature.StringIndexerModel
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
+import org.apache.spark.ml.tuning.ParamGridBuilder
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.PipelineModel
+import org.apache.spark.ml.Transformer
 import org.apache.spark.ml.PipelineStage
+import org.apache.spark.ml.tuning.CrossValidator
+import org.apache.spark.ml.tuning.CrossValidatorModel
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.DataFrame
 import main.scala.schema.Observation
@@ -44,14 +47,29 @@ class Classifier {
         println(algorithm + " test error: " + (1 - accuracy))
     }
 
+    def tune(pipeline: Pipeline, paramGrid: ParamGridBuilder,
+    trainingData: Dataset[Observation]): CrossValidatorModel = {
+        val crossVal = new CrossValidator()
+            .setEstimator(pipeline)
+            .setEvaluator(new MulticlassClassificationEvaluator())
+            .setEstimatorParamMaps(paramGrid.build())
+            .setNumFolds(10)
+        return crossVal.fit(trainingData)
+    }
+
     def generateModel(data: Dataset[Observation], target: String,
-    stage: PipelineStage, algorithm: String): PipelineModel = {
+    stage: PipelineStage, algorithm: String, paramGrid: Option[ParamGridBuilder]): Transformer = {
         val Array(trainingData, testData) = splits(data)
         val indexerStage = indexer(data, target)
         val featuresStage = features(data, target)
         val pipeline = new Pipeline()
             .setStages(Array(indexerStage, featuresStage, stage))
-        val model = pipeline.fit(trainingData)
+        var model: Transformer = _
+        if (!paramGrid.isEmpty) {
+            model = tune(pipeline, paramGrid.get, trainingData)
+        } else {
+            model = pipeline.fit(trainingData)
+        }
         val result = model.transform(testData)
         evaluateModel(algorithm, result)
         return model

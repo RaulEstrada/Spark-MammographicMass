@@ -4,7 +4,7 @@ import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.DataFrame
 import main.scala.schema.Observation
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.ml.PipelineModel
+import org.apache.spark.ml.Transformer
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.rdd.RDD
 
@@ -22,7 +22,7 @@ object Ensembler {
     }
 
     def generateEnsamble(data: Dataset[Observation], target: String,
-    session: SparkSession): Array[PipelineModel] = {
+    session: SparkSession): Array[Transformer] = {
         // Generate and train individual classifiers and print their individual test errors
         val rf = RF.generate(data, target)
         val lr = LR.generate(data, target)
@@ -32,7 +32,7 @@ object Ensembler {
         return session.sparkContext.parallelize(Array(rf, lr, gbt, mpc)).collect()
     }
 
-    def predict(data: Dataset[Observation], ensamble: Array[PipelineModel],
+    def predict(data: Dataset[Observation], ensamble: Array[Transformer],
     session: SparkSession): RDD[((Double, DenseVector), Double)] = {
         import session.implicits._
         var collectedPredictions = ensamble.map(x => x.transform(data))

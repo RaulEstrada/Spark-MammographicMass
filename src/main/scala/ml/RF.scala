@@ -1,9 +1,10 @@
 package main.scala.ml
 
 import org.apache.spark.ml.classification.RandomForestClassifier
-import org.apache.spark.ml.PipelineModel
+import org.apache.spark.ml.Transformer
 import org.apache.spark.sql.Dataset
 import main.scala.schema.Observation
+import org.apache.spark.ml.tuning.ParamGridBuilder
 
 object RF extends Classifier {
     var numberOfTrees = 60
@@ -12,12 +13,18 @@ object RF extends Classifier {
     val featureSubsetStrategy = "auto"
     val algorithmName = "Random Forest"
 
-    def generate(data: Dataset[Observation], target: String): PipelineModel = {
+    def generate(data: Dataset[Observation], target: String): Transformer = {
         val rf = new RandomForestClassifier()
-            .setNumTrees(numberOfTrees)
             .setImpurity(impurity)
-            .setMaxDepth(maxDepth)
             .setFeatureSubsetStrategy(featureSubsetStrategy)
-        return generateModel(data, target, rf, algorithmName)
+        val paramBuilder = getTuningParams(rf)
+        return generateModel(data, target, rf, algorithmName, Some(paramBuilder))
+    }
+
+    def getTuningParams(rf: RandomForestClassifier): ParamGridBuilder = {
+        val paramGrid = new ParamGridBuilder()
+            .addGrid(rf.numTrees, Array(10, 30, 60, 100))
+            .addGrid(rf.maxDepth, Array(5, 10, 15, 30))
+        return paramGrid
     }
 }
