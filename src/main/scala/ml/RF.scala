@@ -1,7 +1,7 @@
 package main.scala.ml
 
 import org.apache.spark.ml.classification.RandomForestClassifier
-import org.apache.spark.ml.Transformer
+import org.apache.spark.ml.tuning.CrossValidatorModel
 import org.apache.spark.sql.Dataset
 import main.scala.schema.Observation
 import org.apache.spark.ml.tuning.ParamGridBuilder
@@ -13,12 +13,13 @@ object RF extends Classifier {
     val featureSubsetStrategy = "auto"
     val algorithmName = "Random Forest"
 
-    def generate(data: Dataset[Observation], target: String): Transformer = {
+    def generate(data: Dataset[Observation], target: String): CrossValidatorModel = {
         val rf = new RandomForestClassifier()
             .setImpurity(impurity)
             .setFeatureSubsetStrategy(featureSubsetStrategy)
         val paramBuilder = getTuningParams(rf)
-        return generateModel(data, target, rf, algorithmName, Some(paramBuilder))
+        val model = generateModel(data, target, rf, algorithmName, Some(paramBuilder))
+        return model
     }
 
     def getTuningParams(rf: RandomForestClassifier): ParamGridBuilder = {

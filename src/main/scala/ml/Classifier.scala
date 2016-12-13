@@ -58,7 +58,7 @@ class Classifier {
     }
 
     def generateModel(data: Dataset[Observation], target: String,
-    stage: PipelineStage, algorithm: String, paramGrid: Option[ParamGridBuilder]): Transformer = {
+    stage: PipelineStage, algorithm: String, paramGrid: Option[ParamGridBuilder]): CrossValidatorModel = {
         val Array(trainingData, testData) = splits(data)
         val indexerStage = indexer(data, target)
         val featuresStage = features(data, target)

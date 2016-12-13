@@ -2,17 +2,18 @@ package main.scala.ml
 
 import org.apache.spark.sql.Dataset
 import org.apache.spark.ml.classification.MultilayerPerceptronClassifier
-import org.apache.spark.ml.Transformer
+import org.apache.spark.ml.tuning.CrossValidatorModel
 import main.scala.schema.Observation
 import org.apache.spark.ml.tuning.ParamGridBuilder
 
 object MPC extends Classifier {
     val algorithmName = "Multi-Layer Perceptron Classifier"
 
-    def generate(data: Dataset[Observation], target: String): Transformer = {
+    def generate(data: Dataset[Observation], target: String): CrossValidatorModel = {
         val mpc = new MultilayerPerceptronClassifier()
         val paramGrid = getTuningParams(mpc)
-        return generateModel(data, target, mpc, algorithmName, Some(paramGrid))
+        val model = generateModel(data, target, mpc, algorithmName, Some(paramGrid))
+        return model
     }
 
     def getTuningParams(mpc: MultilayerPerceptronClassifier): ParamGridBuilder = {
