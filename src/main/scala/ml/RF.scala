@@ -23,7 +23,7 @@ object RF extends Classifier {
 
     def getTuningParams(rf: RandomForestClassifier): ParamGridBuilder = {
         val paramGrid = new ParamGridBuilder()
-            .addGrid(rf.numTrees, Array(10, 30, 60, 100))
+            .addGrid(rf.numTrees, Array(10, 30, 60, 80))
             .addGrid(rf.maxDepth, Array(5, 10, 15, 30))
         return paramGrid
     }

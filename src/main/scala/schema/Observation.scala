@@ -19,7 +19,6 @@ case class Observation(val BIRADS: Option[Int], val Age: Option[Int],
             ("Age", if (Age.isEmpty) {1} else {0}),
             ("Shape", if (Shape.isEmpty) {1} else {0}),
             ("Margin", if (Margin.isEmpty) {1} else {0}),
-            ("Density", if (Density.isEmpty) {1} else {0}),
             ("Severity", if (Severity.isEmpty) {1} else {0})
         )
     }

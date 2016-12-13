@@ -64,12 +64,7 @@ class Classifier {
         val featuresStage = features(data, target)
         val pipeline = new Pipeline()
             .setStages(Array(indexerStage, featuresStage, stage))
-        var model: Transformer = _
-        if (!paramGrid.isEmpty) {
-            model = tune(pipeline, paramGrid.get, trainingData)
-        } else {
-            model = pipeline.fit(trainingData)
-        }
+        var model = tune(pipeline, paramGrid.get, trainingData)
         val result = model.transform(testData)
         evaluateModel(algorithm, result)
         return model
@@ -77,5 +72,5 @@ class Classifier {
 }
 
 object Classifier extends Classifier {
-    val SEED = 1993L
+    val SEED = 1597L
 }
